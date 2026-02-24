@@ -21,7 +21,15 @@ const navItems: NavItem[] = [
     ],
   },
   { id: "cintas", label: "Cintas" },
-  { id: "salsas", label: "Salsas" },
+  {
+    id: "salsas",
+    label: "Salsas",
+    children: [
+      { id: "salsas-rojas", label: "Rojas" },
+      { id: "salsas-blancas", label: "Blancas" },
+      { id: "salsas-especiales", label: "Especiales y Fundentes" },
+    ],
+  },
   { id: "quesos", label: "Quesos" },
   { id: "gratinados", label: "Gratinados" },
   { id: "infantil", label: "Infantil" },
