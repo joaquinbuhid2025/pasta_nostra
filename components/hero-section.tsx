@@ -12,9 +12,9 @@ export function HeroSection() {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#1a1410]/60 via-[#1a1410]/30 to-[#1a1410]" />
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        <p className="text-[#c8a97e] tracking-[0.5em] uppercase text-xs lg:text-sm mb-6 lg:mb-8">
-          Artesania y Sabor
-        </p>
+      <p className="text-[#e8c99e] tracking-[0.5em] uppercase text-base lg:text-xl mb-6 lg:mb-8 font-semibold">
+        Artesania y Sabor
+      </p>
         <h1 className="text-5xl md:text-7xl lg:text-8xl text-[#f5efe6] font-light tracking-[0.15em] uppercase mb-6 lg:mb-8 leading-tight text-balance">
           Carta de Pastas
         </h1>
