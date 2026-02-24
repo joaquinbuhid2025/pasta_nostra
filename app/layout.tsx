@@ -15,7 +15,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Carta de Pastas - Artesania y Sabor',
+  title: 'Pasta Nostra - Artesania y Sabor',
   description: 'Nuestra cocina celebra la tradicion de la pasta fresca. Masas laminadas a diario con huevos de campo, rellenos de autor y materias primas seleccionadas.',
   icons: {
     icon: [
