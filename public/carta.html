@@ -803,7 +803,7 @@
       </div>
 
       <!-- Las Rojas -->
-      <div class="mb-section">
+      <div class="mb-section" id="salsas-rojas">
         <h3 class="sauce-cat">Las Rojas</h3>
         <div class="grid-2">
           <div class="sauce-card">
@@ -818,7 +818,7 @@
       </div>
 
       <!-- Las Blancas -->
-      <div class="mb-section">
+      <div class="mb-section" id="salsas-blancas">
         <h3 class="sauce-cat">Las Blancas</h3>
         <div class="grid-2">
           <div class="sauce-card">
@@ -833,7 +833,7 @@
       </div>
 
       <!-- Especiales y Fundentes -->
-      <div>
+      <div id="salsas-especiales">
         <h3 class="sauce-cat">Especiales y Fundentes</h3>
         <p class="sauce-intro">Salsas aromaticas y mantecas compuestas disenadas para fundirse con el calor propio de la pasta recien hecha.</p>
         <div class="grid-s3">
@@ -1064,7 +1064,6 @@
     (function() {
       // Navigation structure with groups
       var navItems = [
-        { id: 'focaccias', label: 'Focaccias' },
         { id: 'pasta-rellena', label: 'Pasta Rellena', children: [
           { id: 'clasicos',   label: 'Clasicos' },
           { id: 'huerta',     label: 'Huerta' },
@@ -1072,9 +1071,16 @@
           { id: 'mar',        label: 'Mar' }
         ]},
         { id: 'cintas',     label: 'Cintas' },
-        { id: 'salsas',     label: 'Salsas' },
-        { id: 'quesos',     label: 'Quesos' },
+        { id: 'focaccias',  label: 'Focaccias' },
         { id: 'gratinados', label: 'Gratinados' },
+        { id: 'sintacc',    label: 'Sin TACC' },
+        { id: 'infantil',   label: 'Infantil' },
+        { id: 'salsas', label: 'Salsas', children: [
+          { id: 'salsas-rojas',      label: 'Rojas' },
+          { id: 'salsas-blancas',    label: 'Blancas' },
+          { id: 'salsas-especiales', label: 'Especiales y Fundentes' }
+        ]},
+        { id: 'quesos',     label: 'Quesos' },
         { id: 'infantil',   label: 'Infantil' },
         { id: 'sintacc',    label: 'Sin TACC' }
       ];
