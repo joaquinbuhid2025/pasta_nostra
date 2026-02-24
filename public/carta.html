@@ -70,8 +70,8 @@
       color: var(--gold); letter-spacing: 0.3em;
       font-size: 0.875rem; font-weight: 600; text-transform: uppercase;
     }
-    .nav__brand-logo { height: 40px; width: auto; }
-    @media (min-width: 1024px) { .nav__brand { font-size: 1rem; } .nav__brand-logo { height: 48px; } }
+    .nav__brand-logo { height: 44px; width: 44px; object-fit: cover; border-radius: 50%; border: 2px solid var(--gold); }
+    @media (min-width: 1024px) { .nav__brand { font-size: 1rem; } .nav__brand-logo { height: 52px; width: 52px; } }
     .nav__toggle {
       display: block; color: var(--cream); padding: 8px;
     }
@@ -115,9 +115,11 @@
       position: relative; z-index: 2; text-align: center; padding: 0 16px; max-width: 900px;
     }
     .hero__logo {
-      width: 140px; height: auto; margin: 0 auto 24px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+      width: 180px; height: 180px; object-fit: cover; margin: 0 auto 32px;
+      border-radius: 50%; border: 3px solid var(--gold);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     }
-    @media (min-width: 1024px) { .hero__logo { width: 180px; margin-bottom: 32px; } }
+    @media (min-width: 1024px) { .hero__logo { width: 220px; height: 220px; margin-bottom: 40px; } }
     .hero__sub {
       color: var(--gold); letter-spacing: 0.5em; text-transform: uppercase;
       font-size: 0.75rem; margin-bottom: 24px;
