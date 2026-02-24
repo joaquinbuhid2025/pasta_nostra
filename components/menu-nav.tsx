@@ -9,7 +9,6 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: "focaccias", label: "Focaccias" },
   {
     id: "pasta-rellena",
     label: "Pasta Rellena",
@@ -21,6 +20,10 @@ const navItems: NavItem[] = [
     ],
   },
   { id: "cintas", label: "Cintas" },
+  { id: "focaccias", label: "Focaccias" },
+  { id: "gratinados", label: "Gratinados" },
+  { id: "sintacc", label: "Sin TACC" },
+  { id: "infantil", label: "Infantil" },
   {
     id: "salsas",
     label: "Salsas",
@@ -31,9 +34,6 @@ const navItems: NavItem[] = [
     ],
   },
   { id: "quesos", label: "Quesos" },
-  { id: "gratinados", label: "Gratinados" },
-  { id: "infantil", label: "Infantil" },
-  { id: "sintacc", label: "Sin TACC" },
 ]
 
 // Flat list for scroll tracking
