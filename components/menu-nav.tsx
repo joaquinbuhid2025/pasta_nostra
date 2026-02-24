@@ -1,13 +1,25 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
-const sections = [
-  { id: "inicio", label: "Focaccias" },
-  { id: "clasicos", label: "Clasicos" },
-  { id: "huerta", label: "Huerta" },
-  { id: "carnes", label: "Carnes" },
-  { id: "mar", label: "Mar" },
+interface NavItem {
+  id: string
+  label: string
+  children?: { id: string; label: string }[]
+}
+
+const navItems: NavItem[] = [
+  { id: "focaccias", label: "Focaccias" },
+  {
+    id: "pasta-rellena",
+    label: "Pasta Rellena",
+    children: [
+      { id: "clasicos", label: "Clasicos" },
+      { id: "huerta", label: "Huerta" },
+      { id: "carnes", label: "Carnes" },
+      { id: "mar", label: "Mar" },
+    ],
+  },
   { id: "cintas", label: "Cintas" },
   { id: "salsas", label: "Salsas" },
   { id: "quesos", label: "Quesos" },
@@ -16,26 +28,31 @@ const sections = [
   { id: "sintacc", label: "Sin TACC" },
 ]
 
+// Flat list for scroll tracking
+const allSections = navItems.flatMap((item) =>
+  item.children
+    ? [{ id: item.id, label: item.label }, ...item.children]
+    : [{ id: item.id, label: item.label }]
+)
+
 export function MenuNav() {
   const [activeSection, setActiveSection] = useState("")
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [openGroup, setOpenGroup] = useState<string | null>(null)
+  const [mobileOpenGroup, setMobileOpenGroup] = useState<string | null>(null)
+  const groupRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100)
 
-      const sectionElements = sections.map((s) => ({
-        id: s.id,
-        el: document.getElementById(s.id),
-      }))
-
-      for (let i = sectionElements.length - 1; i >= 0; i--) {
-        const el = sectionElements[i].el
+      for (let i = allSections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(allSections[i].id)
         if (el) {
           const rect = el.getBoundingClientRect()
           if (rect.top <= 150) {
-            setActiveSection(sectionElements[i].id)
+            setActiveSection(allSections[i].id)
             break
           }
         }
@@ -46,13 +63,35 @@ export function MenuNav() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClick = () => setOpenGroup(null)
+    document.addEventListener("click", handleClick)
+    return () => document.removeEventListener("click", handleClick)
+  }, [])
+
   const scrollTo = (id: string) => {
     const el = document.getElementById(id)
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" })
       setIsMenuOpen(false)
+      setOpenGroup(null)
     }
   }
+
+  const getParentGroupId = (sectionId: string) => {
+    for (const item of navItems) {
+      if (item.children) {
+        if (item.id === sectionId) return item.id
+        for (const child of item.children) {
+          if (child.id === sectionId) return item.id
+        }
+      }
+    }
+    return null
+  }
+
+  const activeParentGroup = getParentGroupId(activeSection)
 
   return (
     <nav
@@ -95,42 +134,144 @@ export function MenuNav() {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => scrollTo(section.id)}
-                className={`px-3 py-1.5 text-xs tracking-[0.15em] uppercase transition-all duration-300 rounded-sm ${
-                  activeSection === section.id
-                    ? "text-[#c8a97e] bg-[#c8a97e]/10"
-                    : "text-[#a89a8c] hover:text-[#f5efe6]"
-                }`}
-              >
-                {section.label}
-              </button>
-            ))}
+            {navItems.map((item) =>
+              item.children ? (
+                <div key={item.id} className="relative" ref={groupRef}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setOpenGroup(openGroup === item.id ? null : item.id)
+                    }}
+                    className={`flex items-center gap-1 px-3 py-1.5 text-xs tracking-[0.15em] uppercase transition-all duration-300 rounded-sm ${
+                      activeParentGroup === item.id
+                        ? "text-[#c8a97e] bg-[#c8a97e]/10"
+                        : "text-[#a89a8c] hover:text-[#f5efe6]"
+                    }`}
+                  >
+                    {item.label}
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 10 10"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      className={`transition-transform duration-300 ${
+                        openGroup === item.id ? "rotate-180" : ""
+                      }`}
+                    >
+                      <path d="M2 4l3 3 3-3" />
+                    </svg>
+                  </button>
+                  {openGroup === item.id && (
+                    <div className="absolute top-full left-0 min-w-[180px] bg-[#1a1410]/97 backdrop-blur-md border border-[#3d3229] rounded-md p-1.5 mt-1 shadow-lg shadow-black/40">
+                      <button
+                        onClick={() => scrollTo(item.id)}
+                        className="block w-full text-left px-4 py-2 text-[0.7rem] tracking-[0.12em] uppercase text-[#c8a97e] font-medium border-b border-[#3d3229] mb-1 hover:bg-[#c8a97e]/5 transition-colors rounded-sm"
+                      >
+                        Ver Todo
+                      </button>
+                      {item.children.map((child) => (
+                        <button
+                          key={child.id}
+                          onClick={() => scrollTo(child.id)}
+                          className={`block w-full text-left px-4 py-2 text-[0.7rem] tracking-[0.12em] uppercase transition-colors rounded-sm ${
+                            activeSection === child.id
+                              ? "text-[#c8a97e] bg-[#c8a97e]/10"
+                              : "text-[#a89a8c] hover:text-[#f5efe6] hover:bg-[#c8a97e]/5"
+                          }`}
+                        >
+                          {child.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  key={item.id}
+                  onClick={() => scrollTo(item.id)}
+                  className={`px-3 py-1.5 text-xs tracking-[0.15em] uppercase transition-all duration-300 rounded-sm ${
+                    activeSection === item.id
+                      ? "text-[#c8a97e] bg-[#c8a97e]/10"
+                      : "text-[#a89a8c] hover:text-[#f5efe6]"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              )
+            )}
           </div>
         </div>
 
         {/* Mobile menu */}
         <div
           className={`lg:hidden overflow-hidden transition-all duration-300 ${
-            isMenuOpen ? "max-h-[500px] pb-4" : "max-h-0"
+            isMenuOpen ? "max-h-[700px] pb-4" : "max-h-0"
           }`}
         >
-          <div className="grid grid-cols-2 gap-1">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => scrollTo(section.id)}
-                className={`px-3 py-2.5 text-xs tracking-[0.15em] uppercase transition-all duration-300 text-left rounded-sm ${
-                  activeSection === section.id
-                    ? "text-[#c8a97e] bg-[#c8a97e]/10"
-                    : "text-[#a89a8c] hover:text-[#f5efe6]"
-                }`}
-              >
-                {section.label}
-              </button>
-            ))}
+          <div className="flex flex-col gap-0.5">
+            {navItems.map((item) =>
+              item.children ? (
+                <div key={item.id}>
+                  <button
+                    onClick={() =>
+                      setMobileOpenGroup(
+                        mobileOpenGroup === item.id ? null : item.id
+                      )
+                    }
+                    className="flex items-center justify-between w-full px-3 py-2.5 text-xs tracking-[0.15em] uppercase text-[#c8a97e] font-medium border-b border-[#3d3229]"
+                  >
+                    {item.label}
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      className={`transition-transform duration-300 ${
+                        mobileOpenGroup === item.id ? "rotate-180" : ""
+                      }`}
+                    >
+                      <path d="M3 5l3 3 3-3" />
+                    </svg>
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 grid grid-cols-2 gap-0.5 pl-2 ${
+                      mobileOpenGroup === item.id ? "max-h-[300px]" : "max-h-0"
+                    }`}
+                  >
+                    {item.children.map((child) => (
+                      <button
+                        key={child.id}
+                        onClick={() => scrollTo(child.id)}
+                        className={`px-3 py-2 text-[0.7rem] tracking-[0.12em] uppercase transition-all duration-300 text-left rounded-sm ${
+                          activeSection === child.id
+                            ? "text-[#c8a97e] bg-[#c8a97e]/10"
+                            : "text-[#a89a8c] hover:text-[#f5efe6]"
+                        }`}
+                      >
+                        {child.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="h-px bg-[#3d3229] my-1" />
+                </div>
+              ) : (
+                <button
+                  key={item.id}
+                  onClick={() => scrollTo(item.id)}
+                  className={`px-3 py-2.5 text-xs tracking-[0.15em] uppercase transition-all duration-300 text-left rounded-sm ${
+                    activeSection === item.id
+                      ? "text-[#c8a97e] bg-[#c8a97e]/10"
+                      : "text-[#a89a8c] hover:text-[#f5efe6]"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              )
+            )}
           </div>
         </div>
       </div>

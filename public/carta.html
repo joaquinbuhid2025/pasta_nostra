@@ -89,14 +89,66 @@
     .nav__link:hover { color: var(--cream); }
     .nav__link--active { color: var(--gold); background: rgba(200,169,126,0.1); }
     .nav__mobile {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
-      max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease;
+      display: flex; flex-direction: column; gap: 2px;
+      max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease;
       padding: 0 16px;
     }
-    .nav__mobile--open { max-height: 500px; padding: 0 16px 16px; }
+    .nav__mobile--open { max-height: 700px; padding: 0 16px 16px; }
     @media (min-width: 1024px) { .nav__mobile { display: none; } }
     .nav__mobile .nav__link {
       text-align: left; padding: 10px 12px;
+    }
+
+    /* ======================== NAV GROUPS ======================== */
+    .nav__group { position: relative; }
+    .nav__group-btn {
+      padding: 6px 12px; font-size: 0.75rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted); border-radius: 4px;
+      transition: color 0.3s, background 0.3s;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .nav__group-btn:hover { color: var(--cream); }
+    .nav__group-btn--active { color: var(--gold); background: rgba(200,169,126,0.1); }
+    .nav__group-btn svg { width: 10px; height: 10px; transition: transform 0.3s; }
+    .nav__group-btn--open svg { transform: rotate(180deg); }
+    .nav__dropdown {
+      display: none; position: absolute; top: 100%; left: 0; min-width: 180px;
+      background: rgba(26,20,16,0.97); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 6px 0; margin-top: 4px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .nav__group--open .nav__dropdown { display: block; }
+    .nav__dropdown .nav__link {
+      display: block; width: 100%; padding: 8px 16px;
+      font-size: 0.7rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted); border-radius: 0;
+      transition: color 0.3s, background 0.3s;
+    }
+    .nav__dropdown .nav__link:hover { color: var(--cream); background: rgba(200,169,126,0.05); }
+    .nav__dropdown .nav__link--active { color: var(--gold); background: rgba(200,169,126,0.1); }
+
+    /* Mobile group styles */
+    .nav__mobile-group-label {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; font-size: 0.75rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gold); font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav__mobile-group-label svg { width: 12px; height: 12px; transition: transform 0.3s; }
+    .nav__mobile-group-label--open svg { transform: rotate(180deg); }
+    .nav__mobile-sub {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+      padding-left: 8px;
+    }
+    .nav__mobile-sub--open { max-height: 300px; }
+    .nav__mobile-sub .nav__link {
+      font-size: 0.7rem; color: var(--muted); padding: 8px 12px;
+    }
+
+    .nav__mobile-divider {
+      height: 1px; background: var(--border); margin: 4px 0;
     }
 
     /* ======================== HERO ======================== */
@@ -469,7 +521,7 @@
 
     <!-- ============================== FOCACCIAS ============================== -->
     <section class="container">
-      <div class="section-header" id="inicio">
+      <div class="section-header" id="focaccias">
         <p class="section-header__sub">Focaccias</p>
         <h2 class="section-header__title">El Inicio</h2>
         <div class="section-header__line"></div>
@@ -508,6 +560,14 @@
     </section>
 
     <div class="divider"><div class="divider__line-l"></div><div class="divider__dot"></div><div class="divider__line-r"></div></div>
+
+    <!-- ============================== PASTA RELLENA (grupo) ============================== -->
+    <div class="section-header" id="pasta-rellena" style="padding-bottom: 0;">
+      <p class="section-header__sub">Nuestras Especialidades</p>
+      <h2 class="section-header__title">Pasta Rellena</h2>
+      <div class="section-header__line"></div>
+      <p class="section-header__desc">Masa fresca laminada a diario, rellenos de autor elaborados con las mejores materias primas.</p>
+    </div>
 
     <!-- ============================== CLASICOS ============================== -->
     <section class="container">
@@ -979,13 +1039,15 @@
 
   <script>
     (function() {
-      // Navigation sections
-      var sections = [
-        { id: 'inicio',     label: 'Focaccias' },
-        { id: 'clasicos',   label: 'Clasicos' },
-        { id: 'huerta',     label: 'Huerta' },
-        { id: 'carnes',     label: 'Carnes' },
-        { id: 'mar',        label: 'Mar' },
+      // Navigation structure with groups
+      var navItems = [
+        { id: 'focaccias', label: 'Focaccias' },
+        { id: 'pasta-rellena', label: 'Pasta Rellena', children: [
+          { id: 'clasicos',   label: 'Clasicos' },
+          { id: 'huerta',     label: 'Huerta' },
+          { id: 'carnes',     label: 'Carnes' },
+          { id: 'mar',        label: 'Mar' }
+        ]},
         { id: 'cintas',     label: 'Cintas' },
         { id: 'salsas',     label: 'Salsas' },
         { id: 'quesos',     label: 'Quesos' },
@@ -994,6 +1056,17 @@
         { id: 'sintacc',    label: 'Sin TACC' }
       ];
 
+      // Flat list for scroll tracking
+      var allSections = [];
+      navItems.forEach(function(item) {
+        allSections.push({ id: item.id, label: item.label });
+        if (item.children) {
+          item.children.forEach(function(child) {
+            allSections.push({ id: child.id, label: child.label });
+          });
+        }
+      });
+
       var nav        = document.getElementById('mainNav');
       var toggle     = document.getElementById('navToggle');
       var icon       = document.getElementById('navIcon');
@@ -1001,22 +1074,135 @@
       var mobile     = document.getElementById('navMobile');
       var menuOpen   = false;
       var active     = '';
+      var openGroup  = null;
 
-      // Build nav links
-      sections.forEach(function(s) {
-        var btnD = document.createElement('button');
-        btnD.className = 'nav__link';
-        btnD.textContent = s.label;
-        btnD.setAttribute('data-section', s.id);
-        btnD.addEventListener('click', function() { scrollToSection(s.id); });
-        desktop.appendChild(btnD);
+      // Build desktop nav
+      navItems.forEach(function(item) {
+        if (item.children) {
+          // Group with dropdown
+          var group = document.createElement('div');
+          group.className = 'nav__group';
 
-        var btnM = document.createElement('button');
-        btnM.className = 'nav__link';
-        btnM.textContent = s.label;
-        btnM.setAttribute('data-section', s.id);
-        btnM.addEventListener('click', function() { scrollToSection(s.id); });
-        mobile.appendChild(btnM);
+          var groupBtn = document.createElement('button');
+          groupBtn.className = 'nav__group-btn';
+          groupBtn.setAttribute('data-section', item.id);
+          groupBtn.innerHTML = item.label + ' <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l3 3 3-3"/></svg>';
+          groupBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isOpen = group.classList.contains('nav__group--open');
+            // Close all groups first
+            document.querySelectorAll('.nav__group').forEach(function(g) {
+              g.classList.remove('nav__group--open');
+              g.querySelector('.nav__group-btn').classList.remove('nav__group-btn--open');
+            });
+            if (!isOpen) {
+              group.classList.add('nav__group--open');
+              groupBtn.classList.add('nav__group-btn--open');
+            }
+          });
+          group.appendChild(groupBtn);
+
+          var dropdown = document.createElement('div');
+          dropdown.className = 'nav__dropdown';
+
+          // Add parent as first option
+          var parentLink = document.createElement('button');
+          parentLink.className = 'nav__link';
+          parentLink.textContent = 'Ver Todo';
+          parentLink.setAttribute('data-section', item.id);
+          parentLink.style.fontWeight = '500';
+          parentLink.style.color = 'var(--gold)';
+          parentLink.style.borderBottom = '1px solid var(--border)';
+          parentLink.style.marginBottom = '4px';
+          parentLink.addEventListener('click', function() {
+            scrollToSection(item.id);
+            group.classList.remove('nav__group--open');
+            groupBtn.classList.remove('nav__group-btn--open');
+          });
+          dropdown.appendChild(parentLink);
+
+          item.children.forEach(function(child) {
+            var link = document.createElement('button');
+            link.className = 'nav__link';
+            link.textContent = child.label;
+            link.setAttribute('data-section', child.id);
+            link.addEventListener('click', function() {
+              scrollToSection(child.id);
+              group.classList.remove('nav__group--open');
+              groupBtn.classList.remove('nav__group-btn--open');
+            });
+            dropdown.appendChild(link);
+          });
+          group.appendChild(dropdown);
+          desktop.appendChild(group);
+        } else {
+          // Simple link
+          var btn = document.createElement('button');
+          btn.className = 'nav__link';
+          btn.textContent = item.label;
+          btn.setAttribute('data-section', item.id);
+          btn.addEventListener('click', function() { scrollToSection(item.id); });
+          desktop.appendChild(btn);
+        }
+      });
+
+      // Close dropdowns on outside click
+      document.addEventListener('click', function() {
+        document.querySelectorAll('.nav__group').forEach(function(g) {
+          g.classList.remove('nav__group--open');
+          g.querySelector('.nav__group-btn').classList.remove('nav__group-btn--open');
+        });
+      });
+
+      // Build mobile nav
+      navItems.forEach(function(item) {
+        if (item.children) {
+          // Group label
+          var label = document.createElement('button');
+          label.className = 'nav__mobile-group-label';
+          label.innerHTML = item.label + ' <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg>';
+
+          var subWrap = document.createElement('div');
+          subWrap.className = 'nav__mobile-sub';
+
+          item.children.forEach(function(child) {
+            var link = document.createElement('button');
+            link.className = 'nav__link';
+            link.textContent = child.label;
+            link.setAttribute('data-section', child.id);
+            link.addEventListener('click', function() { scrollToSection(child.id); });
+            subWrap.appendChild(link);
+          });
+
+          label.addEventListener('click', function() {
+            var isOpen = subWrap.classList.contains('nav__mobile-sub--open');
+            // Close all mobile subs
+            document.querySelectorAll('.nav__mobile-sub').forEach(function(s) {
+              s.classList.remove('nav__mobile-sub--open');
+            });
+            document.querySelectorAll('.nav__mobile-group-label').forEach(function(l) {
+              l.classList.remove('nav__mobile-group-label--open');
+            });
+            if (!isOpen) {
+              subWrap.classList.add('nav__mobile-sub--open');
+              label.classList.add('nav__mobile-group-label--open');
+            }
+          });
+
+          mobile.appendChild(label);
+          mobile.appendChild(subWrap);
+
+          var divider = document.createElement('div');
+          divider.className = 'nav__mobile-divider';
+          mobile.appendChild(divider);
+        } else {
+          var btn = document.createElement('button');
+          btn.className = 'nav__link';
+          btn.textContent = item.label;
+          btn.setAttribute('data-section', item.id);
+          btn.addEventListener('click', function() { scrollToSection(item.id); });
+          mobile.appendChild(btn);
+        }
       });
 
       function scrollToSection(id) {
@@ -1049,22 +1235,45 @@
 
         // Active section
         var newActive = '';
-        for (var i = sections.length - 1; i >= 0; i--) {
-          var el = document.getElementById(sections[i].id);
+        for (var i = allSections.length - 1; i >= 0; i--) {
+          var el = document.getElementById(allSections[i].id);
           if (el && el.getBoundingClientRect().top <= 150) {
-            newActive = sections[i].id;
+            newActive = allSections[i].id;
             break;
           }
         }
 
         if (newActive !== active) {
           active = newActive;
+
+          // Check if active is a child of a group
+          var parentGroupId = null;
+          navItems.forEach(function(item) {
+            if (item.children) {
+              item.children.forEach(function(child) {
+                if (child.id === active) parentGroupId = item.id;
+              });
+              if (item.id === active) parentGroupId = item.id;
+            }
+          });
+
+          // Update simple nav links
           var allLinks = document.querySelectorAll('.nav__link');
           allLinks.forEach(function(link) {
             if (link.getAttribute('data-section') === active) {
               link.classList.add('nav__link--active');
             } else {
               link.classList.remove('nav__link--active');
+            }
+          });
+
+          // Update group buttons
+          var groupBtns = document.querySelectorAll('.nav__group-btn');
+          groupBtns.forEach(function(btn) {
+            if (btn.getAttribute('data-section') === parentGroupId) {
+              btn.classList.add('nav__group-btn--active');
+            } else {
+              btn.classList.remove('nav__group-btn--active');
             }
           });
         }
